@@ -11,7 +11,7 @@ export function Home({ go }) {
           <span className="brand">MAYDAY</span>
           <Spacer />
           <span className="loc"><Sticker name="pin" size={22} />Kakkanad, Kochi</span>
-          <button className="profile" aria-label="Profile">A</button>
+          <button className="profile inert" aria-label="Profile">A</button>
         </div>
         <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, fontSize: 14, margin: '6px 0 4px' }}>
           <span className="dot" style={{ background: 'var(--red)' }} />Thu 08 Oct · 21:02
@@ -30,7 +30,7 @@ export function Home({ go }) {
       <div className="home-sheet">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: 17, fontWeight: 700 }}>Need help?</span>
-          <button className="link" style={{ fontWeight: 600 }}>My contacts (3)</button>
+          <button className="link inert" style={{ fontWeight: 600 }}>My contacts (3)</button>
         </div>
         <div className="sos">
           <Sticker name="phone" size={74} rotate={12} style={{ position: 'absolute', right: 26, top: 18 }} />
@@ -38,7 +38,7 @@ export function Home({ go }) {
           <span className="sos-sub">Sends your location to the rescue desk</span>
           <SlideToSend onSend={() => go('type')} />
         </div>
-        <button className="helpother">
+        <button className="helpother inert">
           <Sticker name="heart" size={44} rotate={-8} />
           <span>
             <span className="t">Help someone else</span>
@@ -58,27 +58,27 @@ const TYPES = [
   ['Medical, hard to reach', 'medical'], ['Missing person', 'search'],
   ['Villain attack', 'bolt'], ['Something else', 'question'],
 ]
-export function Type({ go, state, set, cancel }) {
+export function Type({ go, state, set }) {
   return (
     <Screen>
       <h1 className="title" style={{ fontSize: 36, margin: '0 0 12px', maxWidth: 220 }}>What's happening?</h1>
       <div className="tiles">
         {TYPES.map(([label, s], i) => (
-          <button key={label} className="tile" aria-pressed={state.type === label} onClick={() => set({ type: label })}>
+          <button key={label} aria-pressed={state.type === label} onClick={label === 'Flood or storm' ? () => set({ type: label }) : undefined} className={`tile ${label === 'Flood or storm' ? '' : 'inert'}`}>
             <Sticker name={s} size={40} rotate={i % 2 ? 4 : -6} />
             <span>{label}</span>
           </button>
         ))}
       </div>
       <Spacer />
-      <Button onClick={() => go('details')}>Raise Alert</Button>
-      <Button variant="ghost" className="danger" onClick={cancel}>Cancel request</Button>
+      <Button onClick={() => state.type && go('details')}>Raise Alert</Button>
+      <Button variant="ghost" className="danger inert">Cancel request</Button>
     </Screen>
   )
 }
 
 /* 3 · Getting help ready: details */
-export function Details({ go, state, set, cancel }) {
+export function Details({ go, state }) {
   return (
     <Screen>
       <h1 className="title">Getting help ready</h1>
@@ -97,24 +97,24 @@ export function Details({ go, state, set, cancel }) {
             <span style={{ display: 'block', fontSize: 17, fontWeight: 800 }}>Thapasya, Infopark Phase 1</span>
             <span style={{ fontSize: 14, color: 'var(--mute)' }}>Kakkanad, Kochi · accurate to 12 m</span>
           </span>
-          <button className="link" style={{ fontSize: 13 }}>Change</button>
+          <button className="link inert" style={{ fontSize: 13 }}>Change</button>
         </div>
       </div>
       <span className="q">Which floor are you on?</span>
-      <Choice fill label="Floor" options={['Ground', '1 to 3', '4+']} value={state.floor} onChange={(v) => set({ floor: v })} />
+      <Choice fill label="Floor" options={['Ground', '1 to 3', '4+']} value={state.floor} locked />
       <span className="q">How many people are with you?</span>
-      <Choice label="People" options={['Just me', '2-5', '6-20', '20+']} value={state.people} onChange={(v) => set({ people: v })} />
+      <Choice label="People" options={['Just me', '2-5', '6-20', '20+']} value={state.people} locked />
       <span className="q">Are you/anyone injured?</span>
-      <Choice label="Injured" options={['Yes', 'No', 'Not sure']} value={state.hurt} onChange={(v) => set({ hurt: v })} />
+      <Choice label="Injured" options={['Yes', 'No', 'Not sure']} value={state.hurt} locked />
       <Spacer />
       <Button onClick={() => go('live')}>Continue</Button>
-      <Button variant="ghost" className="danger" onClick={cancel}>Cancel request</Button>
+      <Button variant="ghost" className="danger inert">Cancel request</Button>
     </Screen>
   )
 }
 
 /* 4 · Getting help ready: live */
-export function Live({ go, state, cancel }) {
+export function Live({ go, state }) {
   const floor = state.floor === 'Ground' ? 'ground floor' : state.floor === '4+' ? '4th floor or above' : '3rd floor'
   return (
     <Screen>
@@ -136,8 +136,8 @@ export function Live({ go, state, cancel }) {
       <DoThisNow label="While you wait:">Stay on your current floor. Keep away from the flood water.</DoThisNow>
       <Spacer />
       <div className="pair">
-        <Button variant="ghost" onClick={() => (window.location.href = 'tel:112')}>Call the rescue desk</Button>
-        <Button variant="ghost" className="danger" onClick={cancel}>Cancel request</Button>
+        <Button variant="ghost" className="inert">Call the rescue desk</Button>
+        <Button variant="ghost" className="danger inert">Cancel request</Button>
       </div>
       <Button onClick={() => go('hero')}>Continue</Button>
     </Screen>
@@ -175,7 +175,7 @@ export function Hero({ go }) {
       </div>
       <Spacer />
       <Button onClick={() => go('changed')}>Somethings Changed</Button>
-      <Button variant="ghost" onClick={() => (window.location.href = 'tel:112')}>Call the rescue desk</Button>
+      <Button variant="ghost" className="inert">Call the rescue desk</Button>
     </Screen>
   )
 }
@@ -184,8 +184,7 @@ export function Hero({ go }) {
 const OTHERS = [['Someone is hurt', 'medical'], ['I had to move', 'pin'], ["I'm out and safe", 'heart'], ['Something else', 'question'], ['My battery is low', 'battery']]
 export function Changed({ go, back }) {
   const [picked, setPicked] = useState(null)
-  const pick = (v) => () => setPicked(v)
-  const next = () => (picked === "I'm out and safe" ? go('safe') : picked === 'Building is collapsing' || !picked ? go('plan') : back())
+  const next = () => picked === 'Building is collapsing' && go('plan')
   return (
     <Screen>
       <button className="close" aria-label="Close" onClick={back} style={{ position: 'absolute', right: 20, top: 22 }}>X</button>
@@ -193,17 +192,17 @@ export function Changed({ go, back }) {
       <p className="sub" style={{ marginTop: -4 }}>Tap what's different. Tidewalker and the rescue desk see it straight away.</p>
       <span className="label" style={{ marginTop: 30 }}>Most likely right now</span>
       <div className="big2">
-        <Bubble color="blue" dark tail="left" className={`bigbtn ${picked === 'Water level is rising faster' ? 'picked' : ''}`} role="button" tabIndex={0} aria-pressed={picked === 'Water level is rising faster'} onClick={pick('Water level is rising faster')} onKeyDown={(e) => e.key === 'Enter' && setPicked('Water level is rising faster')}>
+        <Bubble color="blue" dark tail="left" className="bigbtn inert">
           <Sticker name="wave" size={48} rotate={8} />Water level is rising faster
         </Bubble>
-        <Bubble color="red" tail="right" className={`bigbtn ${picked === 'Building is collapsing' ? 'picked' : ''}`} role="button" tabIndex={0} aria-pressed={picked === 'Building is collapsing'} onClick={pick('Building is collapsing')} onKeyDown={(e) => e.key === 'Enter' && setPicked('Building is collapsing')}>
+        <Bubble color="red" tail="right" className={`bigbtn ${picked === 'Building is collapsing' ? 'picked' : ''}`} role="button" tabIndex={0} aria-pressed={picked === 'Building is collapsing'} onClick={() => setPicked('Building is collapsing')} onKeyDown={(e) => e.key === 'Enter' && setPicked('Building is collapsing')}>
           <Sticker name="building" size={48} rotate={-8} />Building is collapsing
         </Bubble>
       </div>
       <span className="label" style={{ marginTop: 8 }}>Or</span>
       <div className="others">
         {OTHERS.map(([t, s]) => (
-          <button key={t} className={`other ${picked === t ? 'picked' : ''}`} aria-pressed={picked === t} onClick={pick(t)}>
+          <button key={t} className="other inert">
             <Sticker name={s} size={28} />{t}
           </button>
         ))}
@@ -218,7 +217,7 @@ export function Changed({ go, back }) {
 export function Plan({ go }) {
   // No forward button in the design: the plan moves on by itself once the heroes are close.
   useEffect(() => {
-    const t = setTimeout(() => go('onway'), 8000)
+    const t = setTimeout(() => go('onway'), 5000)
     return () => clearTimeout(t)
   }, [go])
   return (
@@ -234,8 +233,8 @@ export function Plan({ go }) {
       <HeroRow color="blue" letter="T" avatar="sky" name="Tidewalker" note="Still coming to your window" eta="9 min" tail="left" />
       <div style={{ marginTop: 6 }}><DoThisNow>Go to the third floor to a room with a window and keep everyone away from the collapsing stairwell.</DoThisNow></div>
       <Spacer />
-      <Button onClick={() => go('changed')}>Somethings Changed</Button>
-      <Button variant="ghost" onClick={() => (window.location.href = 'tel:112')}>Call the rescue desk</Button>
+      <Button className="inert">Somethings Changed</Button>
+      <Button variant="ghost" className="inert">Call the rescue desk</Button>
     </Screen>
   )
 }
@@ -268,7 +267,7 @@ export function OnWay({ go }) {
 }
 
 /* 9 · Are you safe */
-export function Safe({ go, done }) {
+export function Safe({ done }) {
   return (
     <Screen>
       <Spacer />
@@ -278,7 +277,7 @@ export function Safe({ go, done }) {
       <Spacer />
       <Spacer />
       <Button variant="green" onClick={done}>Yes, I'm safe</Button>
-      <Button variant="ghost" onClick={() => go('onway')}>No, I still need help</Button>
+      <Button variant="ghost" className="inert">No, I still need help</Button>
     </Screen>
   )
 }

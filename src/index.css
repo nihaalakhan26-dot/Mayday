@@ -162,3 +162,5 @@ a { color: inherit; }
 
 .bigbtn.picked { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--ink); }
 .other.picked { outline: 3px solid var(--ink); outline-offset: -3px; }
+.inert { cursor: default; }
+.btn.inert:active { transform: none; }
