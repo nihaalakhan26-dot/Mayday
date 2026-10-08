@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Home, Type, Details, Live, Hero, Changed, Plan, OnWay, Safe } from './screens/index.jsx'
 import { CancelSheet } from './components/UI.jsx'
 
@@ -15,7 +15,7 @@ export default function App() {
   const [toast, setToast] = useState(null)
 
   const screen = history[history.length - 1]
-  const go = (s) => setHistory((h) => [...h, s])
+  const go = useCallback((s) => setHistory((h) => [...h, s]), [])
   const back = () => setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h))
   const reset = (msg) => {
     setHistory(['home'])

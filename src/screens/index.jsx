@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Sticker from '../components/Stickers.jsx'
 import { Screen, Spacer, Bubble, Button, Choice, DoThisNow, HeroRow, SlideToSend, Arrow } from '../components/UI.jsx'
 
@@ -133,7 +133,7 @@ export function Live({ go, state, cancel }) {
           <span className="typing"><i /><i /><i /></span>
         </Bubble>
       </div>
-      <DoThisNow label="While you wait:">Stay on your current floor. Keep away from the stairwells and the flood water.</DoThisNow>
+      <DoThisNow label="While you wait:">Stay on your current floor. Keep away from the flood water.</DoThisNow>
       <Spacer />
       <div className="pair">
         <Button variant="ghost" onClick={() => (window.location.href = 'tel:112')}>Call the rescue desk</Button>
@@ -148,7 +148,7 @@ export function Live({ go, state, cancel }) {
 export function Hero({ go }) {
   return (
     <Screen>
-      <h1 className="title" style={{ marginTop: 6 }}>Tidewalker is<br />coming to you</h1>
+      <h1 className="title" style={{ marginTop: 6 }}>Tidewalker is on<br />their way</h1>
       <Bubble color="blue" dark tail="left" style={{ padding: 18, marginTop: 14 }}>
         <span className="avatar" style={{ background: 'var(--sky)', width: 48, height: 48, borderRadius: 24 }}><Sticker name="wave" size={28} /></span>
         <span>
@@ -163,10 +163,10 @@ export function Hero({ go }) {
         </div>
         <div className="card" style={{ background: 'var(--lilac)', flex: 1.4 }}>
           <span className="label" style={{ fontSize: 13 }}>Why her</span>
-          <p style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.35 }}>Moves over floodwater, so blocked roads won't slow her.</p>
+          <p style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.35 }}>Water elemental with increased control and movement</p>
         </div>
       </div>
-      <DoThisNow label="While you wait:">Get everyone to a room with a window on the 3rd floor and stay there.</DoThisNow>
+      <DoThisNow label="While you wait:">Stay on your current floor. Keep away from the flood water.</DoThisNow>
       <div className="card tl">
         <div><b>21:02</b><span className="dot" style={{ background: 'var(--green)', width: 10, height: 10 }} />Alert received</div>
         <div><b>21:03</b><span className="dot" style={{ background: 'var(--green)', width: 10, height: 10 }} />Rescue desk on your case</div>
@@ -174,8 +174,8 @@ export function Hero({ go }) {
         <div style={{ color: 'var(--mute)' }}><b>~21:11</b><span className="dot" style={{ background: '#d9d2c7', width: 10, height: 10 }} />She reaches your window</div>
       </div>
       <Spacer />
-      <Button variant="ghost" onClick={() => go('changed')}>Something's changed</Button>
-      <a className="link" href="tel:112">Call the rescue desk</a>
+      <Button onClick={() => go('changed')}>Somethings Changed</Button>
+      <Button variant="ghost" onClick={() => (window.location.href = 'tel:112')}>Call the rescue desk</Button>
     </Screen>
   )
 }
@@ -183,43 +183,44 @@ export function Hero({ go }) {
 /* 6 · What's changed */
 const OTHERS = [['Someone is hurt', 'medical'], ['I had to move', 'pin'], ["I'm out and safe", 'heart'], ['Something else', 'question'], ['My battery is low', 'battery']]
 export function Changed({ go, back }) {
-  const [listening, setListening] = useState(false)
+  const [picked, setPicked] = useState(null)
+  const pick = (v) => () => setPicked(v)
+  const next = () => (picked === "I'm out and safe" ? go('safe') : picked === 'Building is collapsing' || !picked ? go('plan') : back())
   return (
     <Screen>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: -26 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--mute)' }}>Tidewalker is 6 min away</span>
-        <button className="close" aria-label="Close" onClick={back}>X</button>
-      </div>
-      <h1 className="title" style={{ fontSize: 36 }}>What's changed?</h1>
+      <button className="close" aria-label="Close" onClick={back} style={{ position: 'absolute', right: 20, top: 22 }}>X</button>
+      <h1 className="title" style={{ fontSize: 36, marginTop: 26 }}>What's changed?</h1>
       <p className="sub" style={{ marginTop: -4 }}>Tap what's different. Tidewalker and the rescue desk see it straight away.</p>
-      <span className="label" style={{ marginTop: 6 }}>Most likely right now</span>
+      <span className="label" style={{ marginTop: 30 }}>Most likely right now</span>
       <div className="big2">
-        <Bubble color="blue" dark tail="left" className="bigbtn" role="button" tabIndex={0} onClick={back} onKeyDown={(e) => e.key === 'Enter' && back()}>
+        <Bubble color="blue" dark tail="left" className={`bigbtn ${picked === 'Water level is rising faster' ? 'picked' : ''}`} role="button" tabIndex={0} aria-pressed={picked === 'Water level is rising faster'} onClick={pick('Water level is rising faster')} onKeyDown={(e) => e.key === 'Enter' && setPicked('Water level is rising faster')}>
           <Sticker name="wave" size={48} rotate={8} />Water level is rising faster
         </Bubble>
-        <Bubble color="red" tail="right" className="bigbtn" role="button" tabIndex={0} onClick={() => go('plan')} onKeyDown={(e) => e.key === 'Enter' && go('plan')}>
+        <Bubble color="red" tail="right" className={`bigbtn ${picked === 'Building is collapsing' ? 'picked' : ''}`} role="button" tabIndex={0} aria-pressed={picked === 'Building is collapsing'} onClick={pick('Building is collapsing')} onKeyDown={(e) => e.key === 'Enter' && setPicked('Building is collapsing')}>
           <Sticker name="building" size={48} rotate={-8} />Building is collapsing
         </Bubble>
       </div>
       <span className="label" style={{ marginTop: 8 }}>Or</span>
       <div className="others">
         {OTHERS.map(([t, s]) => (
-          <button key={t} className="other" onClick={t === "I'm out and safe" ? () => go('safe') : back}>
+          <button key={t} className={`other ${picked === t ? 'picked' : ''}`} aria-pressed={picked === t} onClick={pick(t)}>
             <Sticker name={s} size={28} />{t}
           </button>
         ))}
       </div>
       <Spacer />
-      <Button onPointerDown={() => setListening(true)} onPointerUp={() => setListening(false)} onPointerLeave={() => setListening(false)}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>
-        {listening ? 'Listening… let go to send' : 'Hold to tell us in your words'}
-      </Button>
+      <Button onClick={next}>Continue</Button>
     </Screen>
   )
 }
 
 /* 7 · Plan updated */
 export function Plan({ go }) {
+  // No forward button in the design: the plan moves on by itself once the heroes are close.
+  useEffect(() => {
+    const t = setTimeout(() => go('onway'), 8000)
+    return () => clearTimeout(t)
+  }, [go])
   return (
     <Screen>
       <Bubble color="red" tail="left" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: 18, gap: 8, marginTop: 14 }}>
@@ -231,10 +232,10 @@ export function Plan({ go }) {
       <span className="label" style={{ marginTop: 10 }}>Heroes on your case</span>
       <HeroRow color="orange" letter="B" name="Bedrock" note="Clearing the stairwell" eta="5 min" isNew tail="right" />
       <HeroRow color="blue" letter="T" avatar="sky" name="Tidewalker" note="Still coming to your window" eta="9 min" tail="left" />
-      <div style={{ marginTop: 6 }}><DoThisNow>Stay on your floor and keep everyone away from the stairwell.</DoThisNow></div>
+      <div style={{ marginTop: 6 }}><DoThisNow>Go to the third floor to a room with a window and keep everyone away from the collapsing stairwell.</DoThisNow></div>
       <Spacer />
-      <Button onClick={() => go('onway')}>Okay</Button>
-      <button className="link" onClick={() => go('changed')}>Something else has changed</button>
+      <Button onClick={() => go('changed')}>Somethings Changed</Button>
+      <Button variant="ghost" onClick={() => (window.location.href = 'tel:112')}>Call the rescue desk</Button>
     </Screen>
   )
 }
@@ -243,8 +244,7 @@ export function Plan({ go }) {
 export function OnWay({ go }) {
   return (
     <Screen>
-      <span className="chip bare" style={{ marginTop: -14 }}><span className="dot" style={{ background: 'var(--green)' }} />2 heroes on your case</span>
-      <h1 className="title">Tidewalker is<br />2 min away</h1>
+      <h1 className="title" style={{ marginTop: 6 }}>Tidewalker is<br />2 min away</h1>
       <div className="mapcard" style={{ height: 210 }}>
         <svg width="350" height="210" viewBox="0 0 350 210" style={{ width: '100%', height: '100%' }} aria-label="Map showing Tidewalker and Bedrock near you">
           <circle cx="190" cy="92" r="86" fill="none" stroke="#9AA8B8" strokeWidth="2" strokeDasharray="7 6" />
@@ -259,11 +259,10 @@ export function OnWay({ go }) {
         </svg>
       </div>
       <HeroRow color="blue" letter="T" avatar="sky" name="Tidewalker" note="Coming to your window" eta="2 min" tail="left" />
-      <HeroRow color="orange" letter="B" name="Bedrock" note="At the building. Stairwell cleared" eta="Here" tail="right" />
-      <div style={{ marginTop: 6 }}><DoThisNow>Go to the window and wave. Your phone will flash so she can spot you.</DoThisNow></div>
+      <HeroRow color="orange" letter="B" name="Bedrock" note="At the building." eta="Here" tail="right" />
+      <div style={{ marginTop: 6 }}><DoThisNow>Go to the window and wave. Your phone will flash and beep so she can spot you.</DoThisNow></div>
       <Spacer />
-      <Button onClick={() => go('safe')}>Tidewalker is here</Button>
-      <button className="link" onClick={() => go('changed')}>Something's changed</button>
+      <Button onClick={() => go('safe')}>Help Has Arrived</Button>
     </Screen>
   )
 }
@@ -272,7 +271,6 @@ export function OnWay({ go }) {
 export function Safe({ go, done }) {
   return (
     <Screen>
-      <span className="chip" style={{ marginTop: -26 }}><span className="dot" style={{ background: 'var(--green)' }} />21:31 · Tidewalker marked your rescue done</span>
       <Spacer />
       <Sticker name="heart" size={84} rotate={12} style={{ alignSelf: 'flex-end', marginRight: 20 }} />
       <h1 className="title xl">Are you<br />safe now?</h1>
