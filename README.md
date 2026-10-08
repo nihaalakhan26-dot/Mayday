@@ -24,3 +24,20 @@ Every push to `main` redeploys.
 - `src/App.jsx` holds the list of screens and which one is showing.
 - `src/screens/` has one file per screen.
 - `src/index.css` has the colour tokens and the phone frame.
+
+## Screens
+
+The prototype follows one rescue, start to finish:
+
+1. Home: slide to send SOS
+2. What's happening? (type of emergency)
+3. Getting help ready: location, floor, people, injuries
+4. Getting help ready: live case log
+5. Tidewalker is coming to you
+6. What's changed? (edge case starts here)
+7. Plan updated: a second hero is on the way
+8. On the way
+9. Are you safe?
+
+Open any screen directly with a link like `/#hero` or `/#plan`.
+Sticker artwork lives in `public/stickers/` (exported from Figma).
