@@ -78,7 +78,7 @@ export function Type({ go, state, set }) {
 }
 
 /* 3 · Getting help ready: details */
-export function Details({ go, state }) {
+export function Details({ go, state, set }) {
   return (
     <Screen>
       <h1 className="title">Getting help ready</h1>
@@ -101,11 +101,11 @@ export function Details({ go, state }) {
         </div>
       </div>
       <span className="q">Which floor are you on?</span>
-      <Choice fill label="Floor" options={['Ground', '1 to 3', '4+']} value={state.floor} locked />
+      <Choice fill label="Floor" options={['Ground', '1 to 3', '4+']} value={state.floor} onChange={(v) => set({ floor: v })} />
       <span className="q">How many people are with you?</span>
-      <Choice label="People" options={['Just me', '2-5', '6-20', '20+']} value={state.people} locked />
+      <Choice label="People" options={['Just me', '2-5', '6-20', '20+']} value={state.people} onChange={(v) => set({ people: v })} />
       <span className="q">Are you/anyone injured?</span>
-      <Choice label="Injured" options={['Yes', 'No', 'Not sure']} value={state.hurt} locked />
+      <Choice label="Injured" options={['Yes', 'No', 'Not sure']} value={state.hurt} onChange={(v) => set({ hurt: v })} />
       <Spacer />
       <Button onClick={() => go('live')}>Continue</Button>
       <Button variant="ghost" className="danger inert">Cancel request</Button>
@@ -114,15 +114,14 @@ export function Details({ go, state }) {
 }
 
 /* 4 · Getting help ready: live */
-export function Live({ go, state }) {
-  const floor = state.floor === 'Ground' ? 'ground floor' : state.floor === '4+' ? '4th floor or above' : '3rd floor'
+export function Live({ go }) {
   return (
     <Screen>
       <h1 className="title">Getting help ready</h1>
       <p className="sub" style={{ marginTop: -4 }}>A few quick details for your hero. Skip any you can't answer.</p>
       <div className="log" style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 40 }}>
         <Bubble color="yellow" tail="left">
-          <span><span className="time">21:02</span><span className="msg">Alert received from Thapasya, {floor}</span></span>
+          <span><span className="time">21:02</span><span className="msg">Alert received from Thapasya, 3rd floor</span></span>
         </Bubble>
         <Bubble color="blue" dark tail="right">
           <span className="avatar" style={{ background: 'var(--white)' }}>RD</span>
