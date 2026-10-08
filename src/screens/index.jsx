@@ -113,12 +113,17 @@ export function Details({ go, state, set }) {
   )
 }
 
-/* 4 · Getting help ready: live */
+/* 4 · Finding your hero (live) */
 export function Live({ go }) {
+  // No button: the screen moves on by itself once a hero accepts.
+  useEffect(() => {
+    const t = setTimeout(() => go('assigned'), 6000)
+    return () => clearTimeout(t)
+  }, [go])
   return (
     <Screen>
-      <h1 className="title">Getting help ready</h1>
-      <p className="sub" style={{ marginTop: -4 }}>A few quick details for your hero. Skip any you can't answer.</p>
+      <h1 className="title">Finding your hero</h1>
+      <p className="sub" style={{ marginTop: -4 }}>The rescue desk has your details. This usually takes about a minute.</p>
       <div className="log" style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 40 }}>
         <Bubble color="yellow" tail="left">
           <span><span className="time">21:02</span><span className="msg">Alert received from Thapasya, 3rd floor</span></span>
@@ -133,6 +138,36 @@ export function Live({ go }) {
         </Bubble>
       </div>
       <DoThisNow label="While you wait:">Stay on your current floor. Keep away from the flood water.</DoThisNow>
+      <Spacer />
+      <div className="pair">
+        <Button variant="ghost" className="inert">Call the rescue desk</Button>
+        <Button variant="ghost" className="danger inert">Cancel request</Button>
+      </div>
+    </Screen>
+  )
+}
+
+/* 4b · Hero assigned */
+export function Assigned({ go }) {
+  return (
+    <Screen>
+      <h1 className="title">Your hero is<br />assigned</h1>
+      <p className="sub" style={{ marginTop: -4 }}>Tidewalker accepted your case and is getting ready to leave.</p>
+      <Bubble color="blue" dark tail="left" className="reveal" style={{ flexDirection: 'column', gap: 10, padding: '26px 20px 22px', marginTop: 18 }}>
+        <span className="avatar" style={{ background: 'var(--sky)', width: 88, height: 88, borderRadius: 44, borderWidth: 4 }}>
+          <Sticker name="wave" size={52} rotate={-6} />
+        </span>
+        <span style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5 }}>Tidewalker</span>
+        <span style={{ fontSize: 15, fontWeight: 500 }}>Water rescue · 4 km away in Edappally</span>
+        <span className="chip" style={{ alignSelf: 'center', marginTop: 4, color: 'var(--ink)' }}>
+          <span className="dot" style={{ background: 'var(--green)' }} />Accepted · 21:05
+        </span>
+      </Bubble>
+      <div className="card tl" style={{ marginTop: 8 }}>
+        <div><b>21:02</b><span className="dot" style={{ background: 'var(--green)', width: 10, height: 10 }} />Alert received</div>
+        <div><b>21:03</b><span className="dot" style={{ background: 'var(--green)', width: 10, height: 10 }} />Rescue desk on your case</div>
+        <div style={{ fontWeight: 700 }}><b>21:05</b><span className="dot" style={{ background: 'var(--orange)', width: 10, height: 10 }} />Tidewalker assigned</div>
+      </div>
       <Spacer />
       <div className="pair">
         <Button variant="ghost" className="inert">Call the rescue desk</Button>

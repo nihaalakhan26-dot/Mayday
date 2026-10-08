@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
-import { Home, Type, Details, Live, Hero, Changed, Plan, OnWay, Safe } from './screens/index.jsx'
+import { Home, Type, Details, Live, Assigned, Hero, Changed, Plan, OnWay, Safe } from './screens/index.jsx'
 
 // The prototype follows one fixed path. Only the taps on that path do anything.
-const SCREENS = { home: Home, type: Type, details: Details, live: Live, hero: Hero, changed: Changed, plan: Plan, onway: OnWay, safe: Safe }
+const SCREENS = { home: Home, type: Type, details: Details, live: Live, assigned: Assigned, hero: Hero, changed: Changed, plan: Plan, onway: OnWay, safe: Safe }
 const START = { type: null, floor: null, people: null, hurt: null }
 
 export default function App() {

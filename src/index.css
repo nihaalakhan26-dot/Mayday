@@ -164,3 +164,5 @@ a { color: inherit; }
 .other.picked { outline: 3px solid var(--ink); outline-offset: -3px; }
 .inert { cursor: default; }
 .btn.inert:active { transform: none; }
+.reveal { align-items: center; text-align: center; animation: pop .45s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes pop { from { opacity: 0; transform: scale(.9); } }
