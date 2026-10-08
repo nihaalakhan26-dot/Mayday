@@ -101,13 +101,13 @@ export function Details({ go, state, set }) {
         </div>
       </div>
       <span className="q">Which floor are you on?</span>
-      <Choice fill label="Floor" options={['Ground', '1 to 3', '4+']} value={state.floor} onChange={(v) => set({ floor: v })} />
+      <Choice fill label="Floor" options={['Ground', '1 to 3', '4+']} only="1 to 3" value={state.floor} onChange={(v) => set({ floor: v })} />
       <span className="q">How many people are with you?</span>
-      <Choice label="People" options={['Just me', '2-5', '6-20', '20+']} value={state.people} onChange={(v) => set({ people: v })} />
+      <Choice label="People" options={['Just me', '2-5', '6-20', '20+']} only="6-20" value={state.people} onChange={(v) => set({ people: v })} />
       <span className="q">Are you/anyone injured?</span>
-      <Choice label="Injured" options={['Yes', 'No', 'Not sure']} value={state.hurt} onChange={(v) => set({ hurt: v })} />
+      <Choice label="Injured" options={['Yes', 'No', 'Not sure']} only="No" value={state.hurt} onChange={(v) => set({ hurt: v })} />
       <Spacer />
-      <Button onClick={() => go('live')}>Continue</Button>
+      <Button onClick={() => state.floor && state.people && state.hurt && go('live')}>Continue</Button>
       <Button variant="ghost" className="danger inert">Cancel request</Button>
     </Screen>
   )

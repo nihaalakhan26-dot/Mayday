@@ -29,7 +29,7 @@ export function Button({ variant = 'primary', className = '', children, ...rest 
   )
 }
 
-export function Choice({ options, value, onChange, label, fill, locked }) {
+export function Choice({ options, value, onChange, label, fill, locked, only }) {
   return (
     <div className={`choice ${fill ? 'fill' : ''}`} role="radiogroup" aria-label={label}>
       {options.map((o) => (
@@ -37,8 +37,8 @@ export function Choice({ options, value, onChange, label, fill, locked }) {
           key={o}
           role="radio"
           aria-checked={value === o}
-          className={`pill ${value === o ? 'on' : ''} ${locked ? 'inert' : ''}`}
-          onClick={locked ? undefined : () => onChange(value === o ? null : o)}
+          className={`pill ${value === o ? 'on' : ''} ${locked || (only && o !== only) ? 'inert' : ''}`}
+          onClick={locked || (only && o !== only) ? undefined : () => onChange(o)}
         >
           {o}
         </button>

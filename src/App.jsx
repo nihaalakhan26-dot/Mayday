@@ -3,7 +3,7 @@ import { Home, Type, Details, Live, Hero, Changed, Plan, OnWay, Safe } from './s
 
 // The prototype follows one fixed path. Only the taps on that path do anything.
 const SCREENS = { home: Home, type: Type, details: Details, live: Live, hero: Hero, changed: Changed, plan: Plan, onway: OnWay, safe: Safe }
-const START = { type: null, floor: '1 to 3', people: '6-20', hurt: 'No' }
+const START = { type: null, floor: null, people: null, hurt: null }
 
 export default function App() {
   const [history, setHistory] = useState(() => {
